@@ -31,11 +31,11 @@ class SelectedImageState extends State<SelectedImage> {
 
   final ImagePicker _picker = ImagePicker();
   ImageProvider? _imageProvider;
-  PickedFile? pickedFile;
+  XFile? pickedFile;
 
   Future<void> _getImage() async {
     try {
-      pickedFile = await _picker.getImage(source: ImageSource.gallery, maxWidth: 800);
+      pickedFile = await _picker.pickImage(source: ImageSource.gallery, maxWidth: 800);
       if (pickedFile != null) {
 
         if (Device.isWeb) {
@@ -61,7 +61,6 @@ class SelectedImageState extends State<SelectedImage> {
 
   @override
   Widget build(BuildContext context) {
-    // color为null时，Web报错NoSuchMethodError: invalid member on null: 'red' （2.0.3），因此这里指定色值。
     final ColorFilter _colorFilter = ColorFilter.mode(
         ThemeUtils.isDark(context) ? Colours.dark_unselected_item_color : Colours.text_gray,
         BlendMode.srcIn

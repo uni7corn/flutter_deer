@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_deer/account/models/city_entity.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
@@ -40,9 +40,7 @@ class _CitySelectPageState extends State<CitySelectPage> {
       jsonStr = await rootBundle.loadString('assets/data/city.json');
     }
     final List<dynamic> list = json.decode(jsonStr) as List<dynamic>;
-    list.forEach((dynamic value) {
-      _cityList.add(CityEntity().fromJson(value as Map<String, dynamic>));
-    });
+    list.forEach(_addCity);
     SuspensionUtil.setShowSuspensionStatus(_cityList);
     _indexBarData = _cityList.map((CityEntity e) {
       if (e.isShowSuspension) {
@@ -54,6 +52,10 @@ class _CitySelectPageState extends State<CitySelectPage> {
     setState(() {
 
     });
+  }
+
+  void _addCity(dynamic value) {
+    _cityList.add(CityEntity().fromJson(value as Map<String, dynamic>));
   }
 
   /// rootBundle.loadString源码修改

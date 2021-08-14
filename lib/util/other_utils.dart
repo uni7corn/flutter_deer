@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:keyboard_actions/keyboard_actions_item.dart';
@@ -23,7 +23,7 @@ class Utils {
 
   /// 调起拨号页
   static Future<void> launchTelURL(String phone) async {
-    final String url = 'tel:'+ phone;
+    final String url = 'tel:$phone';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

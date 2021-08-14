@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_deer/util/device_utils.dart';
 import 'package:sp_util/sp_util.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/util/log_utils.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:flutter_deer/util/other_utils.dart';
@@ -39,7 +39,7 @@ class TokenInterceptor extends Interceptor {
       _tokenDio!.options = DioUtils.instance.dio.options;
       final Response response = await _tokenDio!.post<dynamic>('lgn/refreshToken', data: params);
       if (response.statusCode == ExceptionHandle.success) {
-        return json.decode(response.data.toString())['access_token'] as String;
+        return (json.decode(response.data.toString()) as Map<String, dynamic>)['access_token'] as String;
       }
     } catch(e) {
       Log.e('刷新Token失败！');
@@ -99,12 +99,12 @@ class LoggingInterceptor extends Interceptor{
     _startTime = DateTime.now();
     Log.d('----------Start----------');
     if (options.queryParameters.isEmpty) {
-      Log.d('RequestUrl: ' + options.baseUrl + options.path);
+      Log.d('RequestUrl: ${options.baseUrl}${options.path}');
     } else {
-      Log.d('RequestUrl: ' + options.baseUrl + options.path + '?' + Transformer.urlEncodeMap(options.queryParameters));
+      Log.d('RequestUrl: ${options.baseUrl}${options.path}?${Transformer.urlEncodeMap(options.queryParameters)}');
     }
-    Log.d('RequestMethod: ' + options.method);
-    Log.d('RequestHeaders:' + options.headers.toString());
+    Log.d('RequestMethod: ${options.method}');
+    Log.d('RequestHeaders:${options.headers}');
     Log.d('RequestContentType: ${options.contentType}');
     Log.d('RequestData: ${options.data.toString()}');
     super.onRequest(options, handler);
@@ -135,10 +135,10 @@ class LoggingInterceptor extends Interceptor{
 class AdapterInterceptor extends Interceptor{
 
   static const String _kMsg = 'msg';
-  static const String _kSlash = '\'';
+  static const String _kSlash = "'";
   static const String _kMessage = 'message';
 
-  static const String _kDefaultText = '"无返回信息"';
+  static const String _kDefaultText = '无返回信息';
   static const String _kNotFound = '未找到查询信息';
 
   static const String _kFailureFormat = '{"code":%d,"message":"%s"}';

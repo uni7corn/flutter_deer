@@ -76,7 +76,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                 width: double.infinity,
                 child: isDark ? null : const DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [Color(0xFF5793FA), Color(0xFF4647FA)]),
+                    gradient: LinearGradient(colors: [Colours.gradient_blue, Color(0xFF4647FA)]),
                   ),
                 ),
               ),
@@ -117,7 +117,6 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
       SliverOverlapAbsorber(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         sliver: SliverAppBar(
-          leading: Gaps.empty,
           brightness: Brightness.dark,
           actions: <Widget>[
             IconButton(
@@ -169,7 +168,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                   height: 80.0,
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TabBar(
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    labelPadding: EdgeInsets.zero,
                     controller: _tabController,
                     labelColor: context.isDark ? Colours.dark_text : Colours.text,
                     unselectedLabelColor: context.isDark ? Colours.dark_text_gray : Colours.text,
@@ -205,7 +204,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
   Future<void> _onPageChange(int index) async {
     provider.setIndex(index);
     /// 这里没有指示器，所以缩短过渡动画时间，减少不必要的刷新
-    _tabController?.animateTo(index, duration: const Duration(milliseconds: 0));
+    _tabController?.animateTo(index, duration: Duration.zero);
   }
 }
 
