@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 /// design/4商品/index.html
 class GoodsPage extends StatefulWidget {
 
-  const GoodsPage({Key? key}) : super(key: key);
+  const GoodsPage({super.key});
 
   @override
   _GoodsPageState createState() => _GoodsPageState();
@@ -26,7 +26,7 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
 
   final List<String> _sortList = ['全部商品', '个人护理', '饮料', '沐浴洗护', '厨房用具', '休闲食品', '生鲜水果', '酒水', '家庭清洁'];
   TabController? _tabController;
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
 
   final GlobalKey _addKey = GlobalKey();
   final GlobalKey _bodyKey = GlobalKey();
@@ -45,11 +45,17 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
     _tabController?.dispose();
     super.dispose();
   }
-  
+
+  /// https://github.com/flutter/flutter/issues/72908
+  @override
+  // ignore: must_call_super
+  void didChangeDependencies() {
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final Color? _iconColor = ThemeUtils.getIconColor(context);
+    final Color? iconColor = ThemeUtils.getIconColor(context);
     return ChangeNotifierProvider<GoodsPageProvider>(
       create: (_) => provider,
       child: Scaffold(
@@ -63,7 +69,7 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
                 key: const Key('search'),
                 width: 24.0,
                 height: 24.0,
-                color: _iconColor,
+                color: iconColor,
               ),
             ),
             IconButton(
@@ -75,7 +81,7 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
                 key: const Key('add'),
                 width: 24.0,
                 height: 24.0,
-                color: _iconColor,
+                color: iconColor,
               ),
             )
           ],
@@ -105,7 +111,7 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
                           style: TextStyles.textBold24,
                         ),
                         Gaps.hGap8,
-                        LoadAssetImage('goods/expand', width: 16.0, height: 16.0, color: _iconColor,)
+                        LoadAssetImage('goods/expand', width: 16.0, height: 16.0, color: iconColor,)
                       ],
                     );
                   },
@@ -114,10 +120,8 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
               ),
             ),
             Gaps.vGap24,
-            Container(
-              // 隐藏点击效果
+            Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              color: context.backgroundColor,
               child: TabBar(
                 onTap: (index) {
                   if (!mounted) {
@@ -129,10 +133,15 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
                 controller: _tabController,
                 labelStyle: TextStyles.textBold18,
                 indicatorSize: TabBarIndicatorSize.label,
-                labelPadding: const EdgeInsets.only(left: 0.0),
+                labelPadding: EdgeInsets.zero,
                 unselectedLabelColor: context.isDark ? Colours.text_gray : Colours.text,
                 labelColor: Theme.of(context).primaryColor,
                 indicatorPadding: const EdgeInsets.only(right: 98.0 - 36.0),
+                // 隐藏点击效果
+                overlayColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                    return Colors.transparent;
+                  },
+                ),
                 tabs: const <Widget>[
                   _TabView('在售', 0),
                   _TabView('待售', 1),
@@ -178,7 +187,6 @@ class _GoodsPageState extends State<GoodsPage> with SingleTickerProviderStateMix
         onSelected: (index, name) {
           provider.setSortIndex(index);
           Toast.show('选择分类: $name');
-          NavigatorUtils.goBack(context);
         },
       ),
     );

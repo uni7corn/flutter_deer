@@ -1,15 +1,15 @@
-import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_deer/goods/goods_router.dart';
 import 'package:flutter_deer/res/resources.dart';
+import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
-import 'package:flutter_deer/goods/goods_router.dart';
 
 class GoodsAddMenu extends StatefulWidget {
 
   const GoodsAddMenu({
-    Key? key,
-  }): super(key: key);
+    super.key,
+  });
 
   @override
   _GoodsAddMenuState createState() => _GoodsAddMenuState();
@@ -62,8 +62,8 @@ class _GoodsAddMenuState extends State<GoodsAddMenu> with SingleTickerProviderSt
             icon: LoadAssetImage('goods/scanning', width: 16.0, height: 16.0, color: iconColor,),
             label: const Text('扫码添加'),
             style: TextButton.styleFrom(
-              primary: Theme.of(context).textTheme.bodyText2?.color,
-              onSurface: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.12),
+              foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
+              disabledForegroundColor: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.12),
               backgroundColor: backgroundColor,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0)),
@@ -82,8 +82,8 @@ class _GoodsAddMenuState extends State<GoodsAddMenu> with SingleTickerProviderSt
             icon: LoadAssetImage('goods/add2', width: 16.0, height: 16.0, color: iconColor,),
             label: const Text('添加商品'),
             style: TextButton.styleFrom(
-              primary: Theme.of(context).textTheme.bodyText2?.color,
-              onSurface: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.12),
+              foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
+              disabledForegroundColor: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.12),
               backgroundColor: backgroundColor,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8.0), bottomRight: Radius.circular(8.0)),

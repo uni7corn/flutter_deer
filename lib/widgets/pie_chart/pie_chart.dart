@@ -10,12 +10,10 @@ import 'package:flutter_deer/widgets/pie_chart/pie_data.dart';
 class PieChart extends StatefulWidget {
   
   const PieChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.name
-  }) : assert(data != null, 'The [data] argument must not be null.'),
-       assert(name != null, 'The [name] argument must not be null.'),
-       super(key: key);
+  });
   
   final List<PieData> data;
   final String name;
@@ -75,7 +73,7 @@ class _PieChartState extends State<PieChart> with SingleTickerProviderStateMixin
         shape: BoxShape.circle,
         color: bgColor,
         boxShadow: <BoxShadow>[
-          BoxShadow(color: shadowColor, offset: const Offset(0.0, 4.0), blurRadius: 8.0, spreadRadius: 0.0),
+          BoxShadow(color: shadowColor, offset: const Offset(0.0, 4.0), blurRadius: 8.0),
         ],
       ),
       child: RepaintBoundary(
@@ -114,7 +112,7 @@ class _PieChartState extends State<PieChart> with SingleTickerProviderStateMixin
 class PieChartPainter extends CustomPainter {
   
   PieChartPainter(this.data, double angleFactor, this.bgColor, this.name, this.count) {
-    if (data.length == null || data.isEmpty) {
+    if (data.isEmpty) {
       return;
     }
     int count = 0;
@@ -164,7 +162,7 @@ class PieChartPainter extends CustomPainter {
   
   @override
   void paint(Canvas canvas, Size size) {
-    if (data.length == null || data.isEmpty) {
+    if (data.isEmpty) {
       return;
     }
     prevAngle = -math.pi;
@@ -186,7 +184,7 @@ class PieChartPainter extends CustomPainter {
       final double x = (size.height * 0.74 / 2) * math.cos(prevAngle + (totalAngle * data[i].percentage / 2));
       final double y = (size.height * 0.74 / 2) * math.sin(prevAngle + (totalAngle * data[i].percentage / 2));
       // 保留一位小数
-      final String percentage = (data[i].percentage * 100).toStringAsFixed(1) + '%';
+      final String percentage = '${(data[i].percentage * 100).toStringAsFixed(1)}%';
       drawPercentage(canvas, percentage, x, y, size);
       prevAngle = prevAngle + totalAngle * data[i].percentage;
     }
@@ -230,7 +228,7 @@ class PieChartPainter extends CustomPainter {
     final List<CustomPainterSemantics> nodes = <CustomPainterSemantics>[];
     final double height = size.height / data.length;
     for (int i = 0; i < data.length; i++) {
-      final String percentage = (data[i].percentage * 100).toStringAsFixed(1) + '%';
+      final String percentage = '${(data[i].percentage * 100).toStringAsFixed(1)}%';
       final CustomPainterSemantics node = CustomPainterSemantics(
         rect: Rect.fromLTRB(
           0, height * i,
@@ -238,7 +236,7 @@ class PieChartPainter extends CustomPainter {
         ),
         properties: SemanticsProperties(
           sortKey: OrdinalSortKey(i.toDouble()),
-          label: name + '$count件' + data[i].name + '占比'+ percentage,
+          label: '$name${'$count件'}${data[i].name}占比$percentage',
           readOnly: true,
           textDirection: TextDirection.ltr,
         ),

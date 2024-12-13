@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/provider/goods_sort_provider.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/util/screen_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:provider/provider.dart';
 
@@ -13,12 +13,12 @@ import 'package:provider/provider.dart';
 class GoodsSortBottomSheet extends StatefulWidget {
 
   const GoodsSortBottomSheet({
-    Key? key,
+    super.key,
     required this.provider,
     required this.onSelected,
-  }): super(key: key);
+  });
 
-  final Function(String, String) onSelected;
+  final void Function(String, String) onSelected;
   /// 临时状态
   final GoodsSortProvider provider;
   
@@ -35,9 +35,9 @@ class GoodsSortBottomSheetState extends State<GoodsSortBottomSheet> with SingleT
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 3);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.provider.initData();
-      _tabController?.animateTo(widget.provider.index, duration: const Duration(microseconds: 0));
+      _tabController?.animateTo(widget.provider.index, duration: Duration.zero);
     });
   }
 
@@ -63,31 +63,31 @@ class GoodsSortBottomSheetState extends State<GoodsSortBottomSheet> with SingleT
                 children: <Widget>[
                   child!,
                   Gaps.line,
-                  Container(
+                  TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    onTap: (index) {
+                      if (provider.myTabs[index].text.nullSafe.isEmpty) {
+                        // 拦截点击事件
+                        _tabController?.animateTo(provider.index);
+                        return;
+                      }
+                      provider.setList(index);
+                      provider.setIndex(index);
+                      _controller.animateTo(
+                        provider.positions[provider.index] * 48.0,
+                        duration: const Duration(milliseconds: 10),
+                        curve: Curves.ease,
+                      );
+                    },
+                    indicatorSize: TabBarIndicatorSize.label,
+                    unselectedLabelColor: context.isDark ? Colours.text_gray : Colours.text,
+                    labelColor: Theme.of(context).primaryColor,
                     // 隐藏点击效果
-                    color: context.dialogBackgroundColor,
-                    child: TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      onTap: (index) {
-                        if (provider.myTabs[index].text.nullSafe.isEmpty) {
-                          // 拦截点击事件
-                          _tabController?.animateTo(provider.index);
-                          return;
-                        }
-                        provider.setList(index);
-                        provider.setIndex(index);
-                        _controller.animateTo(
-                          provider.positions[provider.index] * 48.0,
-                          duration: const Duration(milliseconds: 10),
-                          curve: Curves.ease,
-                        );
-                      },
-                      indicatorSize: TabBarIndicatorSize.label,
-                      unselectedLabelColor: context.isDark ? Colours.text_gray : Colours.text,
-                      labelColor: Theme.of(context).primaryColor,
-                      tabs: provider.myTabs,
-                    ),
+                    overlayColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                      return Colors.transparent;
+                    },),
+                    tabs: provider.myTabs,
                   ),
                   Gaps.line,
                   Expanded(
@@ -115,6 +115,9 @@ class GoodsSortBottomSheetState extends State<GoodsSortBottomSheet> with SingleT
                   ),
                 ),
                 Positioned(
+                  right: 16.0,
+                  top: 16.0,
+                  bottom: 16.0,
                   child: InkWell(
                     onTap: () => NavigatorUtils.goBack(context),
                     child: const SizedBox(
@@ -123,9 +126,6 @@ class GoodsSortBottomSheetState extends State<GoodsSortBottomSheet> with SingleT
                       child: LoadAssetImage('goods/icon_dialog_close'),
                     ),
                   ),
-                  right: 16.0,
-                  top: 16.0,
-                  bottom: 16.0,
                 )
               ],
             ),

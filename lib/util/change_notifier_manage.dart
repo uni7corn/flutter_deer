@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// @weilu https://github.com/simplezhli/flutter_deer
@@ -44,7 +43,7 @@ mixin ChangeNotifierMixin<T extends StatefulWidget> on State<T> {
 
   Map<ChangeNotifier?, List<VoidCallback>?>? _map;
 
-  Map<ChangeNotifier, List<VoidCallback>?>? changeNotifier();
+  Map<ChangeNotifier?, List<VoidCallback>?>? changeNotifier();
   
   @override
   void initState() {
@@ -52,9 +51,12 @@ mixin ChangeNotifierMixin<T extends StatefulWidget> on State<T> {
     /// 遍历数据，如果callbacks不为空则添加监听
     _map?.forEach((changeNotifier, callbacks) { 
       if (callbacks != null && callbacks.isNotEmpty) {
-        callbacks.forEach((callback) {
+
+        void addListener(VoidCallback callback) {
           changeNotifier?.addListener(callback);
-        });
+        }
+
+        callbacks.forEach(addListener);
       }
     });
     super.initState();
@@ -64,9 +66,11 @@ mixin ChangeNotifierMixin<T extends StatefulWidget> on State<T> {
   void dispose() {
     _map?.forEach((changeNotifier, callbacks) {
       if (callbacks != null && callbacks.isNotEmpty) {
-        callbacks.forEach((callback) {
+        void removeListener(VoidCallback callback) {
           changeNotifier?.removeListener(callback);
-        });
+        }
+
+        callbacks.forEach(removeListener);
       }
       changeNotifier?.dispose();
     });

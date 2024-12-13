@@ -4,19 +4,19 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/statistics/widgets/selected_date.dart';
+import 'package:flutter_deer/util/date_utils.dart' as date;
 import 'package:flutter_deer/util/image_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/widgets/my_app_bar.dart';
-import 'package:flutter_deer/widgets/load_image.dart';
-import 'package:flutter_deer/widgets/my_card.dart';
 import 'package:flutter_deer/widgets/bezier_chart/bezier_chart.dart';
-import 'package:flutter_deer/util/date_utils.dart' as date;
+import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
+import 'package:flutter_deer/widgets/my_card.dart';
 
 /// design/5统计/index.html#artboard1
 /// design/5统计/index.html#artboard6
 class OrderStatisticsPage extends StatefulWidget {
 
-  const OrderStatisticsPage(this.index, {Key? key}) : super(key: key);
+  const OrderStatisticsPage(this.index, {super.key});
 
   final int index;
 
@@ -78,7 +78,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
                   Gaps.hGap12,
                   Gaps.vLine,
                   Gaps.hGap12,
-                  _buildButton('${_initialDay.month.toString()}月', const Key('month'), 1),
+                  _buildButton('${_initialDay.month}月', const Key('month'), 1),
                   Gaps.hGap12,
                   Gaps.vLine,
                   Gaps.hGap12,
@@ -103,10 +103,9 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
 //                        duration: const Duration(milliseconds: 300),
 //                      ),
                       AnimatedSize(
-                        child: _buildCalendar(),
-                        vsync: this,
                         curve: Curves.decelerate,
                         duration: const Duration(milliseconds: 300),
+                        child: _buildCalendar(),
                       ),
                       if (_selectedIndex == 1) InkWell(
                         onTap: () {
@@ -134,13 +133,13 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
                   children: <Widget>[
                     Text(widget.index == 1 ? '订单走势' : '交易额走势', style: TextStyles.textBold18),
                     Gaps.vGap16,
-                    _buildChart(Colours.app_main, const Color(0x805793FA), widget.index == 1 ? '全部订单' : '交易额(元)', '3000'),
+                    _buildChart(Colours.app_main, Colours.shadow_blue, widget.index == 1 ? '全部订单' : '交易额(元)', '3000'),
                     if (widget.index == 1) Column(
                       children: <Widget>[
                         Gaps.vGap16,
                         _buildChart(const Color(0xFFFFAA33), const Color(0x80FFAA33), '完成订单', '2000'),
                         Gaps.vGap16,
-                        _buildChart(Theme.of(context).errorColor, const Color(0x80FF4759), '取消订单', '1000'),
+                        _buildChart(Theme.of(context).colorScheme.error, const Color(0x80FF4759), '取消订单', '1000'),
                         Gaps.vGap16,
                       ],
                     )
@@ -173,11 +172,14 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
     
     final Column body = Column(
       children: <Widget>[
+        Gaps.vGap16,
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Gaps.hGap16,
             Text(title, style: const TextStyle(color: Colors.white)),
+            const Spacer(),
             Text(count, style: const TextStyle(color: Colors.white)),
+            Gaps.hGap16,
           ],
         ),
         Gaps.vGap4,
@@ -195,10 +197,8 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
               ),
             ],
             config: BezierChartConfig(
-              footerHeight: 0,
+              footerHeight: 16,
               showVerticalIndicator: false,
-              verticalIndicatorFixedPosition: false,
-              snap: true,
               backgroundColor: color,
             ),
           ),
@@ -212,7 +212,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
         color: color,
         shadowColor: shadowColor,
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: ImageUtils.getAssetImage('statistic/chart_fg'),
@@ -225,12 +225,12 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
     );
   }
 
-  List<DataPoint> data = [];
-  List<DataPoint> data1 = [];
-  List<DataPoint> data2 = [];
+  List<DataPoint<dynamic>> data = [];
+  List<DataPoint<dynamic>> data1 = [];
+  List<DataPoint<dynamic>> data2 = [];
 
   // 数据变化图标会刷新，否则不会
-  List<DataPoint> _getRandomData() {
+  List<DataPoint<dynamic>> _getRandomData() {
     if (data.isEmpty) {
       for (int i = 0; i < 7; i++) {
         data.add(DataPoint<double>(value: Random.secure().nextInt(3000).toDouble(), xAxis: (i * 5).toDouble()));
@@ -272,11 +272,12 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
   
   List<Widget> _buildWeeks() {
     final List<Widget> widgets = [];
-    _weeks.forEach((str) {
+    void addWidget(String str) {
       widgets.add(Center(
-        child: Text(str, style: Theme.of(context).textTheme.subtitle2),
+        child: Text(str, style: Theme.of(context).textTheme.titleSmall),
       ));
-    });
+    }
+    _weeks.forEach(addWidget);
     return widgets;
   }
 
@@ -289,7 +290,8 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
       list = date.DateUtils.daysInWeek(_selectedDay);
     }
     dayWidgets.addAll(_buildWeeks());
-    list.forEach((day) {
+
+    void addButton(DateTime day) {
       dayWidgets.add(
         Center(
           child: SelectedDateButton(
@@ -308,13 +310,15 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
           ),
         ),
       );
-    });
+    }
+
+    list.forEach(addButton);
     return dayWidgets;
   }
 
   List<Widget> _builderYearCalendar() {
     final List<Widget> monthWidgets = [];
-    _monthList.forEach((month) {
+    void addButton(int month) {
       monthWidgets.add(
         Center(
           child: SelectedDateButton(
@@ -330,13 +334,15 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
           ),
         ),
       );
-    });
+    }
+    _monthList.forEach(addButton);
     return monthWidgets;
   }
   
   List<Widget> _builderWeekCalendar() {
     final List<Widget> dayWidgets = [];
-    _weeksDays.forEach((day) {
+
+    void addButton(DateTime day) {
       dayWidgets.add(
         Center(
           child: SelectedDateButton(
@@ -351,8 +357,10 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
             },
           ),
         ),
-      );       
-    });
+      );
+    }
+    _weeksDays.forEach(addButton);
     return dayWidgets;
   }
+
 }

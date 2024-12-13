@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_deer/net/net.dart';
 import 'package:flutter_deer/shop/models/user_entity.dart';
 import 'package:test/test.dart';
@@ -18,8 +19,8 @@ void main() {
         onSuccess: (data) {
           expect(data?.name, '唯鹿');
         },
-        onError: (_, __) {
-          print('$_, $__');
+        onError: (code, msg) {
+          debugPrint('$code, $msg');
         }
       );
     });

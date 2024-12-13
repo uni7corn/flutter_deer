@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/toast_utils.dart';
-import 'package:keyboard_actions/keyboard_actions_item.dart';
 import 'package:keyboard_actions/keyboard_actions_config.dart';
+import 'package:keyboard_actions/keyboard_actions_item.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,8 +14,9 @@ class Utils {
 
   /// 打开链接
   static Future<void> launchWebURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       Toast.show('打开链接失败！');
     }
@@ -23,9 +24,9 @@ class Utils {
 
   /// 调起拨号页
   static Future<void> launchTelURL(String phone) async {
-    final String url = 'tel:'+ phone;
-    if (await canLaunch(url)) {
-      await launch(url);
+    final Uri uri = Uri.parse('tel:$phone');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       Toast.show('拨号失败！');
     }
@@ -38,7 +39,6 @@ class Utils {
   static KeyboardActionsConfig getKeyboardActionsConfig(BuildContext context, List<FocusNode> list) {
     return KeyboardActionsConfig(
       keyboardBarColor: ThemeUtils.getKeyboardActionsColor(context),
-      nextFocus: true,
       actions: List.generate(list.length, (i) => KeyboardActionsItem(
         focusNode: list[i],
         toolbarButtons: [
@@ -59,7 +59,7 @@ class Utils {
   static String? getCurrLocale() {
     final String locale = SpUtil.getString(Constant.locale)!;
     if (locale == '') {
-      return window.locale.languageCode;
+      return PlatformDispatcher.instance.locale.languageCode;
     }
     return locale;
   }

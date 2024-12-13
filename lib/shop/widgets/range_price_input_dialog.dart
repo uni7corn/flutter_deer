@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/util/input_formatter/number_text_input_formatter.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
@@ -10,13 +9,13 @@ import 'package:flutter_deer/widgets/base_dialog.dart';
 class RangePriceInputDialog extends StatefulWidget {
 
   const RangePriceInputDialog({
-    Key? key,
+    super.key,
     this.title,
     required this.onPressed,
-  }) : super(key : key);
+  });
 
   final String? title;
-  final Function(String, String) onPressed;
+  final void Function(String, String) onPressed;
   
   @override
   _RangePriceInputDialog createState() => _RangePriceInputDialog();
@@ -53,10 +52,10 @@ class _RangePriceInputDialog extends State<RangePriceInputDialog> {
             ),
             Container(
               alignment: Alignment.center,
-              child: const Text('至'),
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               color: context.dialogBackgroundColor,
-              height: double.infinity
+              height: double.infinity,
+              child: const Text('至')
             ),
             Expanded(
               child: _buildTextField(_controller1),
@@ -84,7 +83,6 @@ class _RangePriceInputDialog extends State<RangePriceInputDialog> {
       autofocus: true,
       //style: TextStyles.textDark14,
       controller: controller,
-      maxLines: 1,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       // 金额限制数字格式
       inputFormatters: [UsNumberTextInputFormatter()],

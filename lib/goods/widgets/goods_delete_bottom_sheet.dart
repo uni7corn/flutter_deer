@@ -7,11 +7,11 @@ import 'package:flutter_deer/widgets/my_button.dart';
 class GoodsDeleteBottomSheet extends StatelessWidget {
   
   const GoodsDeleteBottomSheet({
-    Key? key,
+    super.key,
     required this.onTapDelete,
-  }): super(key: key);
+  });
 
-  final Function onTapDelete;
+  final VoidCallback onTapDelete;
   
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class GoodsDeleteBottomSheet extends StatelessWidget {
             Gaps.line,
             MyButton(
               minHeight: 54.0,
-              textColor: Theme.of(context).errorColor,
+              textColor: Theme.of(context).colorScheme.error,
               text: '确认删除',
               backgroundColor: Colors.transparent,
               onPressed: () {

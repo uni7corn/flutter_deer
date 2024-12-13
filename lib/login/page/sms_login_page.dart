@@ -1,23 +1,21 @@
-import 'dart:ui';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/deer_localizations.dart';
-import 'package:flutter_deer/util/change_notifier_manage.dart';
+import 'package:flutter_deer/login/widgets/my_text_field.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/toast_utils.dart';
+import 'package:flutter_deer/util/change_notifier_manage.dart';
 import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
-import 'package:flutter_deer/login/widgets/my_text_field.dart';
+import 'package:flutter_gen/gen_l10n/deer_localizations.dart';
 
 import '../login_router.dart';
 
 /// design/1注册登录/index.html#artboard4
 class SMSLoginPage extends StatefulWidget {
-
-  const SMSLoginPage({Key? key}) : super(key: key);
+  const SMSLoginPage({super.key});
 
   @override
   _SMSLoginPageState createState() => _SMSLoginPageState();
@@ -41,7 +39,7 @@ class _SMSLoginPageState extends State<SMSLoginPage> with ChangeNotifierMixin<SM
       _nodeText2: null,
     };
   }
- 
+
   void _verify() {
     final String name = _phoneController.text;
     final String vCode = _vCodeController.text;
@@ -104,19 +102,25 @@ class _SMSLoginPageState extends State<SMSLoginPage> with ChangeNotifierMixin<SM
       Gaps.vGap8,
       Container(
         alignment: Alignment.centerLeft,
-        child: GestureDetector(
-          child: RichText(
-            text: TextSpan(
-              text: DeerLocalizations.of(context)!.registeredTips,
-              style: Theme.of(context).textTheme.subtitle2?.copyWith(fontSize: Dimens.font_sp14),
-              children: <TextSpan>[
-                TextSpan(text: DeerLocalizations.of(context)!.register, style: TextStyle(color: Theme.of(context).errorColor)),
-                TextSpan(text: Utils.getCurrLocale() == 'zh' ? '。' : '.'),
-              ],
-            ),
+        child: RichText(
+          text: TextSpan(
+            text: DeerLocalizations.of(context)!.registeredTips,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: Dimens.font_sp14),
+            children: <TextSpan>[
+              TextSpan(
+                text: DeerLocalizations.of(context)!.register,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    NavigatorUtils.push(context, LoginRouter.registerPage);
+                  },
+              ),
+              TextSpan(text: Utils.getCurrLocale() == 'zh' ? '。' : '.',),
+            ],
           ),
-          onTap: () => NavigatorUtils.push(context, LoginRouter.registerPage),
-        )
+        ),
       ),
       Gaps.vGap24,
       MyButton(
@@ -129,7 +133,7 @@ class _SMSLoginPageState extends State<SMSLoginPage> with ChangeNotifierMixin<SM
         child: GestureDetector(
           child: Text(
             DeerLocalizations.of(context)!.forgotPasswordLink,
-            style: Theme.of(context).textTheme.subtitle2,
+            style: Theme.of(context).textTheme.titleSmall,
           ),
           onTap: () => NavigatorUtils.push(context, LoginRouter.resetPasswordPage),
         ),

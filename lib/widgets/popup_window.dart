@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 /// weilu update：
 /// 1.去除了IntrinsicWidth限制，添加了默认蒙版。
 /// 2.简化position计算。
-const Duration _kWindowDuration = Duration(milliseconds: 0);
+const Duration _kWindowDuration = Duration.zero;
 const double _kWindowCloseIntervalEnd = 2.0 / 3.0;
-const double _kWindowScreenPadding = 0.0;
+const double _kWindowScreenPadding = 0.001;
 
 ///弹窗方法
 Future<T?> showPopupWindow<T>({
@@ -20,7 +20,6 @@ Future<T?> showPopupWindow<T>({
   String? semanticLabel,
   bool isShowBg = false,
 }) {
-  assert(context != null);
 
   switch (defaultTargetPlatform) {
     case TargetPlatform.iOS:
@@ -32,15 +31,15 @@ Future<T?> showPopupWindow<T>({
     case TargetPlatform.windows:
       semanticLabel ??= MaterialLocalizations.of(context).popupMenuLabel;
   }
-  final RenderBox? overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox?;
+  final RenderBox? overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
 
   // 默认位置锚点下方
-  final Offset _offset = Offset(0, anchor.size.height);
+  final Offset defaultOffset = Offset(0, anchor.size.height);
 
   if (offset == null) {
-    offset = _offset;
+    offset = defaultOffset;
   } else {
-    offset = offset + _offset;
+    offset = offset + defaultOffset;
   }
   // 获得控件左下方的坐标
   final a = anchor.localToGlobal(offset, ancestor: overlay);
@@ -63,13 +62,13 @@ Future<T?> showPopupWindow<T>({
 ///自定义弹窗路由：参照_PopupMenuRoute修改的
 class _PopupWindowRoute<T> extends PopupRoute<T> {
   _PopupWindowRoute({
-    RouteSettings? settings,
+    super.settings,
     required this.child,
     required this.position,
     required this.barrierLabel,
     required this.semanticLabel,
     required this.isShowBg,
-  }) : super(settings: settings);
+  });
 
   final Widget child;
   final RelativeRect position;
@@ -138,10 +137,10 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
 ///自定义弹窗控件：对自定义的弹窗内容进行再包装，添加长宽、动画等约束条件
 class _PopupWindow<T> extends StatelessWidget {
   const _PopupWindow({
-    Key? key,
+    super.key,
     required this.route,
     required this.semanticLabel,
-  }) : super(key: key);
+  });
 
   final _PopupWindowRoute<T> route;
   final String? semanticLabel;
@@ -219,7 +218,6 @@ class _PopupWindowLayoutDelegate extends SingleChildLayoutDelegate {
       x = position.left;
     } else {
       // Menu button is equidistant from both edges, so grow in reading direction.
-      assert(textDirection != null);
       switch (textDirection) {
         case TextDirection.rtl:
           x = size.width - position.right - childSize.width;
@@ -232,14 +230,17 @@ class _PopupWindowLayoutDelegate extends SingleChildLayoutDelegate {
 
     // Avoid going outside an area defined as the rectangle 8.0 pixels from the
     // edge of the screen in every direction.
-    if (x < _kWindowScreenPadding)
+    if (x < _kWindowScreenPadding) {
       x = _kWindowScreenPadding;
-    else if (x + childSize.width > size.width - _kWindowScreenPadding)
+    } else if (x + childSize.width > size.width - _kWindowScreenPadding) {
       x = size.width - childSize.width - _kWindowScreenPadding;
-    if (y < _kWindowScreenPadding)
+    }
+
+    if (y < _kWindowScreenPadding) {
       y = _kWindowScreenPadding;
-    else if (y + childSize.height > size.height - _kWindowScreenPadding)
+    } else if (y + childSize.height > size.height - _kWindowScreenPadding) {
       y = size.height - childSize.height - _kWindowScreenPadding;
+    }
     return Offset(x, y);
   }
 

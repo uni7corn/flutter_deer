@@ -1,10 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sp_util/sp_util.dart';
-import 'package:flutter_deer/common/common.dart';
-import 'package:flutter_gen/gen_l10n/deer_localizations.dart';
 import 'package:flutter_deer/login/widgets/my_text_field.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/store/store_router.dart';
@@ -13,13 +10,15 @@ import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
+import 'package:flutter_gen/gen_l10n/deer_localizations.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../login_router.dart';
 
 /// design/1注册登录/index.html
 class LoginPage extends StatefulWidget {
 
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -47,9 +46,9 @@ class _LoginPageState extends State<LoginPage> with ChangeNotifierMixin<LoginPag
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       /// 显示状态栏和导航栏
-      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     });
     _nameController.text = SpUtil.getString(Constant.phone).nullSafe;
   }
@@ -118,7 +117,6 @@ class _LoginPageState extends State<LoginPage> with ChangeNotifierMixin<LoginPag
       isInputPwd: true,
       controller: _passwordController,
       keyboardType: TextInputType.visiblePassword,
-      maxLength: 16,
       hintText: DeerLocalizations.of(context)!.inputPasswordHint,
     ),
     Gaps.vGap24,
@@ -134,7 +132,7 @@ class _LoginPageState extends State<LoginPage> with ChangeNotifierMixin<LoginPag
         child: Text(
           DeerLocalizations.of(context)!.forgotPasswordLink,
           key: const Key('forgotPassword'),
-          style: Theme.of(context).textTheme.subtitle2,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         onTap: () => NavigatorUtils.push(context, LoginRouter.resetPasswordPage),
       ),

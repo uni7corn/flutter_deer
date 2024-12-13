@@ -7,11 +7,11 @@ import 'package:flutter_deer/widgets/base_dialog.dart';
 class GoodsSizeDialog extends StatefulWidget {
 
   const GoodsSizeDialog({
-    Key? key,
+    super.key,
     this.onPressed,
-  }) : super(key : key);
+  });
 
-  final Function(String)? onPressed;
+  final void Function(String)? onPressed;
   
   @override
   _GoodsSizeDialog createState() => _GoodsSizeDialog();
@@ -43,7 +43,6 @@ class _GoodsSizeDialog extends State<GoodsSizeDialog> {
         child: TextField(
           autofocus: true,
           controller: _controller,
-          maxLines: 1,
           decoration: const InputDecoration(
             isDense: true,
             contentPadding: EdgeInsets.symmetric(horizontal: 16.0),

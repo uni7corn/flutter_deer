@@ -8,7 +8,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrCodeScannerPage extends StatefulWidget {
 
-  const QrCodeScannerPage({Key? key}) : super(key: key);
+  const QrCodeScannerPage({super.key});
 
   @override
   _QrCodeScannerPageState createState() => _QrCodeScannerPageState();
@@ -25,6 +25,7 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
     super.reassemble();
     if (Platform.isAndroid) {
       controller?.pauseCamera();
+      controller?.resumeCamera();
     } else if (Platform.isIOS) {
       controller?.resumeCamera();
     }
@@ -44,7 +45,6 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
               key: qrKey,
               onQRViewCreated: _onQRViewCreated,
               overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
                 borderRadius: 10,
                 borderLength: 20,
                 borderWidth: 5,
@@ -79,12 +79,23 @@ class _QrCodeScannerPageState extends State<QrCodeScannerPage> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+  void _onQRViewCreated(QRViewController? controller) {
+    setState(() {
+      this.controller = controller;
+      if (Platform.isAndroid) {
+        controller?.pauseCamera();
+        controller?.resumeCamera();
+      } else if (Platform.isIOS) {
+        controller?.resumeCamera();
+      }
+    });
+    controller?.scannedDataStream.listen((scanData) {
       /// 避免扫描结果多次回调
       controller.dispose();
-      NavigatorUtils.goBackWithParams(context, scanData.code);
+      if (!mounted) {
+        return;
+      }
+      NavigatorUtils.goBackWithParams(context, scanData.code ?? '');
     });
   }
 

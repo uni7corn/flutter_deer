@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 class RiseNumberText extends StatefulWidget {
 
   const RiseNumberText(this.number,{
-    Key? key,
+    super.key,
     this.style,
     this.duration = 1200
-  }): super(key: key);
+  });
 
   final num number;
   final TextStyle? style;
@@ -56,12 +56,10 @@ class _RiseNumberTextState extends State<RiseNumberText> with SingleTickerProvid
       builder: (_, __) {
         // 数字默认从0增长。数据变化时，由之前数字为基础变化。
         return Text(
-          (_fromNumber + (_animation.value * (widget.number - _fromNumber))).toStringAsFixed(2).toString(),
+          (_fromNumber + (_animation.value * (widget.number - _fromNumber))).toStringAsFixed(2),
           style: widget.style,
         );
       },
     );
   }
 }
-
-

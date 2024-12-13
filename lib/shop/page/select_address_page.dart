@@ -1,15 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_2d_amap/flutter_2d_amap.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
-import 'package:flutter_deer/util/other_utils.dart';
-import 'package:flutter_deer/widgets/search_bar.dart';
+import 'package:flutter_deer/widgets/my_search_bar.dart';
 
 class AddressSelectPage extends StatefulWidget {
 
-  const AddressSelectPage({Key? key}) : super(key: key);
+  const AddressSelectPage({super.key});
 
   @override
   _AddressSelectPageState createState() => _AddressSelectPageState();
@@ -31,10 +30,11 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
   @override
   void initState() {
     super.initState();
+    Flutter2dAMap.updatePrivacy(true);
     /// 配置key
     Flutter2dAMap.setApiKey(
       iOSKey: '4327916279bf45a044bb53b947442387',
-      webKey: '4e479545913a3a180b3cffc267dad646',
+      webKey: 'c9446a164fd1245dd110b54114095303',
     );
   }
   
@@ -42,7 +42,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: SearchBar(
+      appBar: MySearchBar(
         hintText: '搜索地址',
         onPressed: (text) {
           _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
@@ -115,11 +115,10 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
 class _AddressItem extends StatelessWidget {
 
   const _AddressItem({
-    Key? key,
     required this.date,
     this.isSelected = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final PoiSearch date;
   final bool isSelected;
@@ -137,9 +136,7 @@ class _AddressItem extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Text(
-                date.provinceName.nullSafe + ' ' +
-                date.cityName.nullSafe + ' ' +
-                date.adName.nullSafe + ' ' + date.title.nullSafe,
+                '${date.provinceName.nullSafe} ${date.cityName.nullSafe} ${date.adName.nullSafe} ${date.title.nullSafe}',
               ),
             ),
             Visibility(
@@ -152,4 +149,3 @@ class _AddressItem extends StatelessWidget {
     );
   }
 }
-

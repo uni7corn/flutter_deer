@@ -16,7 +16,7 @@ import 'package:flutter_deer/widgets/my_button.dart';
 /// 骚操作：借腹生子
 class SMSVerifyDialog extends StatefulWidget {
 
-  const SMSVerifyDialog({Key? key}) : super(key: key);
+  const SMSVerifyDialog({super.key});
 
   @override
   _SMSVerifyDialogState createState() => _SMSVerifyDialogState();
@@ -28,7 +28,7 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
   final int _second = 60;
   /// 当前秒数
   late int _currentSecond;
-  StreamSubscription? _subscription;
+  StreamSubscription<dynamic>? _subscription;
   bool _clickable = true;
 
   final FocusNode _focusNode = FocusNode();
@@ -130,7 +130,7 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
                     /// https://github.com/flutter/flutter/issues/47191
                     /// https://github.com/flutter/flutter/pull/57264 
                     /// 1.19.0已修复，小于此版本需添加addPostFrameCallback处理，否则会错误触发onChanged。
-                    SchedulerBinding.instance!.addPostFrameCallback((_) {
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
                       _controller.clear();
                     });
                   }

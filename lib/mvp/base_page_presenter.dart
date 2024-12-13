@@ -22,7 +22,7 @@ class BasePagePresenter<V extends IMvpView> extends BasePresenter<V> {
   }
 
   /// 返回Future 适用于刷新，加载更多
-  Future requestNetwork<T>(Method method, {
+  Future<dynamic> requestNetwork<T>(Method method, {
     required String url,
     bool isShow = true,
     bool isClose = true,
@@ -113,7 +113,7 @@ class BasePagePresenter<V extends IMvpView> extends BasePresenter<V> {
       view.showToast(msg);
     }
     /// 页面如果dispose，则不回调onError
-    if (onError != null && view.getContext() != null) {
+    if (onError != null) {
       onError(code, msg);
     }
   }

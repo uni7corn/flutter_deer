@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/provider/goods_sort_provider.dart';
 import 'package:flutter_deer/goods/widgets/goods_sort_bottom_sheet.dart';
+import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/click_item.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 import 'package:flutter_deer/widgets/selected_image.dart';
 import 'package:flutter_deer/widgets/text_field_item.dart';
-import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/widgets/my_app_bar.dart';
 
 import '../goods_router.dart';
 
@@ -20,12 +20,12 @@ import '../goods_router.dart';
 class GoodsEditPage extends StatefulWidget {
   
   const GoodsEditPage({
-    Key? key,
+    super.key,
     this.isAdd = true,
     this.isScan = false,
     this.heroTag,
     this.goodsImageUrl
-  }) : super(key: key);
+  });
   
   final bool isAdd;
   final bool isScan;
@@ -44,17 +44,24 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.isScan) {
         _scan();
       }
     });
   }
 
-  void _scan() {
+  Future<void> _scan() async {
     if (Device.isMobile) {
-      NavigatorUtils.pushResult(context, GoodsRouter.qrCodeScannerPage, (Object code) {
-        _codeController.text = code.toString();
+      NavigatorUtils.unfocus();
+      // 延时保证键盘收起，否则进入扫码页会黑屏
+      Future<dynamic>.delayed(const Duration(milliseconds: 500), (){
+        if (!mounted) {
+          return;
+        }
+        NavigatorUtils.pushResult(context, GoodsRouter.qrCodeScannerPage, (Object code) {
+          _codeController.text = code.toString();
+        });
       });
     } else {
       Toast.show('当前平台暂不支持');
@@ -70,6 +77,13 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
       body: MyScrollView(
         key: const Key('goods_edit_page'),
         padding: const EdgeInsets.symmetric(vertical: 16.0),
+        bottomButton: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+          child: MyButton(
+            onPressed: () => NavigatorUtils.goBack(context),
+            text: '提交',
+          ),
+        ),
         children: <Widget>[
           Gaps.vGap5,
           const Padding(
@@ -91,7 +105,7 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
           Center(
             child: Text(
               '点击添加商品图片',
-              style: Theme.of(context).textTheme.subtitle2?.copyWith(fontSize: Dimens.font_sp14),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: Dimens.font_sp14),
             ),
           ),
           Gaps.vGap16,
@@ -121,13 +135,13 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
                 child: Semantics(
                   label: '扫码',
                   child: GestureDetector(
+                    onTap: _scan,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: context.isDark ?
                         const LoadAssetImage('goods/icon_sm', width: 16.0, height: 16.0) :
                         const LoadAssetImage('goods/scanning', width: 16.0, height: 16.0),
                     ),
-                    onTap: _scan,
                   ),
                 ),
               )
@@ -175,13 +189,6 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
           ),
           Gaps.vGap8,
         ],
-        bottomButton: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-          child: MyButton(
-            onPressed: () => NavigatorUtils.goBack(context),
-            text: '提交',
-          ),
-        ),
       )
     );
   }

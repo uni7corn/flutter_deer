@@ -14,7 +14,7 @@ import 'package:flutter_deer/widgets/my_app_bar.dart';
 
 class DemoPage extends StatefulWidget {
 
-  const DemoPage({Key? key}) : super(key: key);
+  const DemoPage({super.key});
 
   @override
   _DemoPageState createState() => _DemoPageState();
@@ -25,9 +25,9 @@ class _DemoPageState extends State<DemoPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       /// 显示状态栏和导航栏(使用QuickActions进入demo页)
-      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     });
   }
 

@@ -10,10 +10,10 @@ import 'package:flutter_deer/widgets/load_image.dart';
 class WithdrawalAccountItem extends StatefulWidget {
 
   const WithdrawalAccountItem({
-    Key? key,
+    super.key,
     required this.data,
     required this.onLongPress,
-  }): super(key: key);
+  });
   
   final WithdrawalAccountModel data;
   final GestureLongPressCallback onLongPress;
@@ -141,10 +141,10 @@ class _WithdrawalAccountItemState extends State<WithdrawalAccountItem> with Sing
 class AccountCard extends StatefulWidget {
 
   const AccountCard({
-    Key? key,
+    super.key,
     required this.child,
     required this.type
-  }): super(key: key);
+  });
 
   final Widget child;
   final int type;
@@ -163,10 +163,9 @@ class _AccountCardState extends State<AccountCard> {
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: context.isDark ? null : [
             BoxShadow(
-              color: widget.type == 1 ? const Color(0x804EE07A) : const Color(0x805793FA),
+              color: widget.type == 1 ? const Color(0x804EE07A) : Colours.shadow_blue,
               offset: const Offset(0.0, 2.0),
               blurRadius: 8.0,
-              spreadRadius: 0.0,
             ),
           ],
           gradient: LinearGradient(

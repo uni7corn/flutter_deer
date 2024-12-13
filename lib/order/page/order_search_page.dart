@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/mvp/base_page.dart';
 import 'package:flutter_deer/mvp/power_presenter.dart';
-import 'package:flutter_deer/order/models/search_entity.dart';
 import 'package:flutter_deer/order/iview/order_search_iview.dart';
+import 'package:flutter_deer/order/models/search_entity.dart';
 import 'package:flutter_deer/order/presenter/order_search_presenter.dart';
-import 'package:flutter_deer/provider/base_list_provider.dart';
-import 'package:flutter_deer/shop/models/user_entity.dart';
+import 'package:flutter_deer/order/provider/base_list_provider.dart';
 import 'package:flutter_deer/shop/iview/shop_iview.dart';
+import 'package:flutter_deer/shop/models/user_entity.dart';
 import 'package:flutter_deer/shop/presenter/shop_presenter.dart';
-import 'package:flutter_deer/widgets/my_refresh_list.dart';
-import 'package:flutter_deer/widgets/search_bar.dart';
 import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/widgets/my_refresh_list.dart';
+import 'package:flutter_deer/widgets/my_search_bar.dart';
 import 'package:flutter_deer/widgets/state_layout.dart';
 import 'package:provider/provider.dart';
 
 /// design/3订单/index.html#artboard8
 class OrderSearchPage extends StatefulWidget {
 
-  const OrderSearchPage({Key? key}) : super(key: key);
+  const OrderSearchPage({super.key});
 
   @override
   _OrderSearchPageState createState() => _OrderSearchPageState();
 }
 
-class _OrderSearchPageState extends State<OrderSearchPage> with BasePageMixin<OrderSearchPage, PowerPresenter> implements OrderSearchIMvpView, ShopIMvpView {
+class _OrderSearchPageState extends State<OrderSearchPage> with BasePageMixin<OrderSearchPage, PowerPresenter<dynamic>> implements OrderSearchIMvpView, ShopIMvpView {
 
   @override
   BaseListProvider<SearchItems> provider = BaseListProvider<SearchItems>();
@@ -34,7 +34,7 @@ class _OrderSearchPageState extends State<OrderSearchPage> with BasePageMixin<Or
   @override
   void initState() {
     /// 默认为加载中状态，本页面场景默认为空
-    provider.setStateTypeNotNotify(StateType.empty);
+    provider.stateType = StateType.empty;
     super.initState();
   }
   
@@ -43,7 +43,7 @@ class _OrderSearchPageState extends State<OrderSearchPage> with BasePageMixin<Or
     return ChangeNotifierProvider<BaseListProvider<SearchItems>>(
       create: (_) => provider,
       child: Scaffold(
-        appBar: SearchBar(
+        appBar: MySearchBar(
           hintText: '请输入手机号或姓名查询',
           onPressed: (text) {
             if (text.isEmpty) {
@@ -94,8 +94,8 @@ class _OrderSearchPageState extends State<OrderSearchPage> with BasePageMixin<Or
   late ShopPagePresenter _shopPagePresenter;
 
   @override
-  PowerPresenter createPresenter() {
-    final PowerPresenter powerPresenter = PowerPresenter<dynamic>(this);
+  PowerPresenter<dynamic> createPresenter() {
+    final PowerPresenter<dynamic> powerPresenter = PowerPresenter<dynamic>(this);
     _orderSearchPresenter = OrderSearchPresenter();
     _shopPagePresenter = ShopPagePresenter();
     powerPresenter.requestPresenter([_orderSearchPresenter, _shopPagePresenter]);

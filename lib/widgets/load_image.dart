@@ -6,7 +6,7 @@ import 'package:flutter_deer/util/image_utils.dart';
 class LoadImage extends StatelessWidget {
   
   const LoadImage(this.image, {
-    Key? key,
+    super.key,
     this.width, 
     this.height,
     this.fit = BoxFit.cover, 
@@ -14,8 +14,7 @@ class LoadImage extends StatelessWidget {
     this.holderImg = 'none',
     this.cacheWidth,
     this.cacheHeight,
-  }) : assert(image != null, 'The [image] argument must not be null.'),
-       super(key: key);
+  });
   
   final String image;
   final double? width;
@@ -30,11 +29,11 @@ class LoadImage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     if (image.isEmpty || image.startsWith('http')) {
-      final Widget _image = LoadAssetImage(holderImg, height: height, width: width, fit: fit);
+      final Widget holder = LoadAssetImage(holderImg, height: height, width: width, fit: fit);
       return CachedNetworkImage(
         imageUrl: image,
-        placeholder: (_, __) => _image,
-        errorWidget: (_, __, dynamic error) => _image,
+        placeholder: (_, __) => holder,
+        errorWidget: (_, __, dynamic error) => holder,
         width: width,
         height: height,
         fit: fit,
@@ -58,7 +57,7 @@ class LoadImage extends StatelessWidget {
 class LoadAssetImage extends StatelessWidget {
   
   const LoadAssetImage(this.image, {
-    Key? key,
+    super.key,
     this.width,
     this.height, 
     this.cacheWidth,
@@ -66,7 +65,7 @@ class LoadAssetImage extends StatelessWidget {
     this.fit,
     this.format = ImageFormat.png,
     this.color
-  }): super(key: key);
+  });
 
   final String image;
   final double? width;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_deer/demo/lottie/bunny.dart';
 import 'package:lottie/lottie.dart';
 
@@ -6,7 +7,7 @@ import 'package:lottie/lottie.dart';
 /// 感谢Flopsy项目提供的思路及素材
 class LottieDemo extends StatefulWidget {
 
-  const LottieDemo({Key? key,}) : super(key: key);
+  const LottieDemo({super.key,});
 
   @override
   _LottieDemoState createState() => _LottieDemoState();
@@ -42,7 +43,7 @@ class _LottieDemoState extends State<LottieDemo> with TickerProviderStateMixin {
 
     final Widget content = Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         backgroundColor: _backgroundColor,
         title: const Text('Lottie Demo', style: TextStyle(color: _textColor),),
         iconTheme: const IconThemeData(color: _textColor),
@@ -106,12 +107,12 @@ class _LottieDemoState extends State<LottieDemo> with TickerProviderStateMixin {
     return Theme(
       data: ThemeData(
         primaryColor: _primaryColor,
-        accentColor: _primaryColor,
         textSelectionTheme: TextSelectionThemeData(
           selectionColor: _primaryColor.withAlpha(70),
-          selectionHandleColor: _primaryColor,
+          selectionHandleColor: _primaryColor,  // 覆盖`selectionHandleColor`不起作用 https://github.com/flutter/flutter/issues/74890
           cursorColor: _primaryColor,
         ),
+        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: _primaryColor),
       ),
       child: content,
     );
@@ -124,7 +125,7 @@ class _LottieDemoState extends State<LottieDemo> with TickerProviderStateMixin {
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )
-      ..layout(minWidth: 0, maxWidth: double.infinity);
+      ..layout();
     return textPainter.size.width;
   }
 }
@@ -132,24 +133,23 @@ class _LottieDemoState extends State<LottieDemo> with TickerProviderStateMixin {
 class _MyTextField extends StatefulWidget {
 
   const _MyTextField({
-    Key? key,
     required this.labelText,
     this.obscureText = false,
     this.keyboardType,
     this.onHasFocus,
     this.onObscureText,
     this.onChanged
-  }) : super(key: key);
+  });
 
   final String labelText;
   final bool obscureText;
   final TextInputType? keyboardType;
   /// 获取焦点监听
-  final Function(bool isObscure)? onHasFocus;
+  final void Function(bool isObscure)? onHasFocus;
   /// 密码可见监听
-  final Function(bool isObscure)? onObscureText;
+  final void Function(bool isObscure)? onObscureText;
   /// 文字输入监听
-  final Function(String text)? onChanged;
+  final void Function(String text)? onChanged;
 
   @override
   _MyTextFieldState createState() => _MyTextFieldState();
@@ -206,9 +206,14 @@ class _MyTextFieldState extends State<_MyTextField> {
                 color: _textColor,
               ),
             ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: _primaryColor,
+              ),
+            ),
             suffixIcon: widget.obscureText ? IconButton(
               icon: Icon(
-                Icons.remove_red_eye,
+                _isObscure ? Icons.visibility_off : Icons.visibility,
                 color: _focusNode.hasFocus ? _primaryColor : _textColor,
               ),
               onPressed: () {
@@ -229,4 +234,3 @@ class _MyTextFieldState extends State<_MyTextField> {
     );
   }
 }
-

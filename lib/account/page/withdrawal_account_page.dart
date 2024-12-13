@@ -12,7 +12,7 @@ import '../account_router.dart';
 /// design/6店铺-账户/index.html#artboard26
 class WithdrawalAccountPage extends StatefulWidget {
 
-  const WithdrawalAccountPage({Key? key}) : super(key: key);
+  const WithdrawalAccountPage({super.key});
 
   @override
   _WithdrawalAccountPageState createState() => _WithdrawalAccountPageState();
@@ -30,7 +30,7 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
     _list.clear();
     _list.add(WithdrawalAccountModel('唯鹿', '微信', 1, ''));
     _list.add(WithdrawalAccountModel('李*', '工商银行', 0, '**** **** **** 5236'));
-    _list.add(WithdrawalAccountModel('李*', '渤海银行', 0, '**** **** **** 2165'));
+    _list.add(WithdrawalAccountModel('李*', '工商银行', 0, '**** **** **** 2165'));
   }
   
   @override
@@ -122,7 +122,7 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
                 Gaps.line,
                 MyButton(
                   minHeight: 54.0,
-                  textColor: Theme.of(context).errorColor,
+                  textColor: Theme.of(context).colorScheme.error,
                   text: '确认解绑',
                   backgroundColor: Colors.transparent,
                   onPressed: () {

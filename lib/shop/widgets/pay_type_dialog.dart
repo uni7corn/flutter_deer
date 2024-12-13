@@ -10,13 +10,13 @@ import 'package:flutter_deer/widgets/load_image.dart';
 class PayTypeDialog extends StatefulWidget {
 
   const PayTypeDialog({
-    Key? key,
+    super.key,
     this.value,
     required this.onPressed,
-  }) : super(key : key);
+  });
 
   final List<int>? value;
-  final Function(List<int>) onPressed;
+  final void Function(List<int>) onPressed;
   
   @override
   _PayTypeDialog createState() => _PayTypeDialog();

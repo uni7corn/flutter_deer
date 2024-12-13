@@ -1,9 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 
 /// The part of a material design [AppBar] that expands and collapses.
@@ -27,14 +25,13 @@ class MyFlexibleSpaceBar extends StatefulWidget {
   ///
   /// Most commonly used in the [AppBar.flexibleSpace] field.
   const MyFlexibleSpaceBar({
-    Key? key,
+    super.key,
     this.title,
     this.background,
     this.centerTitle,
     this.titlePadding,
     this.collapseMode = CollapseMode.parallax,
-  }) : assert(collapseMode != null),
-        super(key: key);
+  });
 
   /// The primary contents of the flexible space bar when expanded.
   ///
@@ -93,7 +90,6 @@ class MyFlexibleSpaceBar extends StatefulWidget {
     required double currentExtent,
     required Widget child,
   }) {
-    assert(currentExtent != null);
     return FlexibleSpaceBarSettings(
       toolbarOpacity: toolbarOpacity ?? 1.0,
       minExtent: minExtent ?? currentExtent,
@@ -109,9 +105,9 @@ class MyFlexibleSpaceBar extends StatefulWidget {
 
 class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
   bool _getEffectiveCenterTitle(ThemeData theme) {
-    if (widget.centerTitle != null)
+    if (widget.centerTitle != null) {
       return widget.centerTitle!;
-    assert(theme.platform != null);
+    }
     switch (theme.platform) {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
@@ -125,10 +121,10 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
   }
 
   Alignment _getTitleAlignment(bool effectiveCenterTitle) {
-    if (effectiveCenterTitle)
+    if (effectiveCenterTitle) {
       return Alignment.bottomCenter;
+    }
     final TextDirection textDirection = Directionality.of(context);
-    assert(textDirection != null);
     switch (textDirection) {
       case TextDirection.rtl:
         return Alignment.bottomRight;
@@ -156,7 +152,7 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
   @override
   void initState() {
     //监听Widget是否绘制完毕
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final RenderBox? renderBoxRed = _key.currentContext!.findRenderObject() as RenderBox?;
       _offset = renderBoxRed!.size.width / 2;
     });
@@ -167,7 +163,6 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final FlexibleSpaceBarSettings settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!;
-    assert(settings != null, 'A FlexibleSpaceBar must be wrapped in the widget returned by FlexibleSpaceBar.createSettings().');
 
     final List<Widget> children = <Widget>[];
 
@@ -214,7 +209,7 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
 
       final double opacity = settings.toolbarOpacity;
       if (opacity > 0.0) {
-        TextStyle titleStyle = theme.primaryTextTheme.headline6!;
+        TextStyle titleStyle = theme.primaryTextTheme.titleLarge!;
         titleStyle = titleStyle.copyWith(
             color: titleStyle.color!.withOpacity(opacity),
             fontWeight: t != 0 ? FontWeight.normal : FontWeight.bold
@@ -228,7 +223,7 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
         final double scaleValue = Tween<double>(begin: 1.5, end: 1.0).transform(t);
         final double width = (size.width - 32.0) / 2 - _offset;
         final Matrix4 scaleTransform = Matrix4.identity()
-          ..scale(scaleValue, scaleValue, 1.0)..translate(t * width, 0.0);
+          ..scale(scaleValue, scaleValue, 1.0)..translate(t * width);
         final Alignment titleAlignment = _getTitleAlignment(false);
         children.add(Container(
           padding: padding,
@@ -250,4 +245,3 @@ class _FlexibleSpaceBarState extends State<MyFlexibleSpaceBar> {
     return ClipRect(child: Stack(children: children));
   }
 }
-

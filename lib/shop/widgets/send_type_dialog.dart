@@ -9,11 +9,11 @@ import 'package:flutter_deer/widgets/load_image.dart';
 class SendTypeDialog extends StatefulWidget {
 
   const SendTypeDialog({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key : key);
+  });
 
-  final Function(int, String) onPressed;
+  final void Function(int, String) onPressed;
   
   @override
   _SendTypeDialog createState() => _SendTypeDialog();

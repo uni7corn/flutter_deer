@@ -18,7 +18,7 @@ import '../order_router.dart';
 /// design/3订单/index.html
 class OrderPage extends StatefulWidget {
 
-  const OrderPage({Key? key}) : super(key: key);
+  const OrderPage({super.key});
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -38,7 +38,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 5);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       /// 预先缓存剩余切换图片
       _preCacheImage();
     });
@@ -56,6 +56,12 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
   void dispose() {
     _tabController?.dispose();
     super.dispose();
+  }
+
+  /// https://github.com/simplezhli/flutter_deer/issues/194
+  @override
+  // ignore: must_call_super
+  void didChangeDependencies() {
   }
 
   bool isDark = false;
@@ -76,7 +82,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                 width: double.infinity,
                 child: isDark ? null : const DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [Color(0xFF5793FA), Color(0xFF4647FA)]),
+                    gradient: LinearGradient(colors: [Colours.gradient_blue, Color(0xFF4647FA)]),
                   ),
                 ),
               ),
@@ -117,8 +123,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
       SliverOverlapAbsorber(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         sliver: SliverAppBar(
-          leading: Gaps.empty,
-          brightness: Brightness.dark,
+          systemOverlayStyle: isDark ? ThemeUtils.light : ThemeUtils.dark,
           actions: <Widget>[
             IconButton(
               onPressed: () {
@@ -135,8 +140,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           centerTitle: true,
-          expandedHeight: 100.0,
-          floating: false, // 不随着滑动隐藏标题
+          expandedHeight: 100.0, // 不随着滑动隐藏标题
           pinned: true, // 固定在顶部
           flexibleSpace: MyFlexibleSpaceBar(
             background: isDark ? Container(height: 113.0, color: Colours.dark_bg_color,) : LoadAssetImage('order/order_bg',
@@ -169,7 +173,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                   height: 80.0,
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TabBar(
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    labelPadding: EdgeInsets.zero,
                     controller: _tabController,
                     labelColor: context.isDark ? Colours.dark_text : Colours.text,
                     unselectedLabelColor: context.isDark ? Colours.dark_text_gray : Colours.text,
@@ -201,11 +205,11 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
     ];
   }
 
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   Future<void> _onPageChange(int index) async {
     provider.setIndex(index);
     /// 这里没有指示器，所以缩短过渡动画时间，减少不必要的刷新
-    _tabController?.animateTo(index, duration: const Duration(milliseconds: 0));
+    _tabController?.animateTo(index, duration: Duration.zero);
   }
 }
 
@@ -241,7 +245,6 @@ class _TabView extends StatelessWidget {
           width: 46.0,
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               /// 使用context.select替代Consumer
               LoadAssetImage(context.select<OrderPageProvider, int>((value) => value.index) == index ? 
@@ -256,7 +259,7 @@ class _TabView extends StatelessWidget {
           right: 0.0,
           child: index < 3 ? DecoratedBox(
             decoration: BoxDecoration(
-              color: Theme.of(context).errorColor,
+              color: Theme.of(context).colorScheme.error,
               borderRadius: BorderRadius.circular(11.0),
             ),
             child: const Padding(

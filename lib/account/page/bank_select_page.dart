@@ -1,20 +1,20 @@
 import 'dart:convert';
 
+import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_deer/account/models/bank_entity.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/other_utils.dart';
-import 'package:flutter_deer/widgets/my_app_bar.dart';
-import 'package:azlistview/azlistview.dart';
+import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 
 /// design/6店铺-账户/index.html#artboard33
 class BankSelectPage extends StatefulWidget {
   
-  const BankSelectPage({Key? key, this.type = 0}) : super(key: key);
+  const BankSelectPage({super.key, this.type = 0});
   
   final int type;
   
@@ -48,9 +48,7 @@ class _BankSelectPageState extends State<BankSelectPage> {
     // 获取城市列表
     rootBundle.loadString(widget.type == 0 ? 'assets/data/bank.json' : 'assets/data/bank_2.json').then((String value) {
       final List<dynamic> list = json.decode(value) as List<dynamic>;
-      list.forEach((dynamic value) {
-        _bankList.add(BankEntity().fromJson(value as Map<String, dynamic>));
-      });
+      list.forEach(_addBank);
       SuspensionUtil.sortListBySuspensionTag(_bankList);
       SuspensionUtil.setShowSuspensionStatus(_bankList);
       _indexBarData = _bankList.map((BankEntity e) {
@@ -69,6 +67,10 @@ class _BankSelectPageState extends State<BankSelectPage> {
        
       });
     });
+  }
+
+  void _addBank(dynamic value) {
+    _bankList.add(BankEntity.fromJson(value as Map<String, dynamic>));
   }
   
   @override
@@ -94,7 +96,7 @@ class _BankSelectPageState extends State<BankSelectPage> {
             indexHintWidth: 96,
             indexHintHeight: 96,
             indexHintTextStyle: const TextStyle(fontSize: 26.0, color: Colors.white),
-            textStyle: Theme.of(context).textTheme.subtitle2!,
+            textStyle: Theme.of(context).textTheme.titleSmall!,
             downTextStyle: context.isDark ? TextStyles.textSize12 : const TextStyle(fontSize: 12.0, color: Colors.black),
           ),
         ),
@@ -110,7 +112,7 @@ class _BankSelectPageState extends State<BankSelectPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 16.0),
-            child: Text('常用', style: Theme.of(context).textTheme.subtitle2),
+            child: Text('常用', style: Theme.of(context).textTheme.titleSmall),
           ),
           Expanded(
             child: ListView.builder(
